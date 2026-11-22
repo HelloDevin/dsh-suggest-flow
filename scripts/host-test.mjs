@@ -203,6 +203,37 @@ t('seeded memory persisted to our own storage file', existsSync(ownMemoryFile)
 await seeded.resetMemory();
 t('reset clears hint and cache', seeded.getConfig().hint === '' && seeded.cache.size === 0 && !existsSync(ownMemoryFile));
 
+// --- engine-level regression: a force call must never join an inflight job ---
+// (Unreachable through the service layer — refreshSuggestions requires a cached
+// entry, and entry creation follows job settlement — but the engine stands alone.)
+{
+  const { createRecommender } = await import(new URL('../lib/engine.mjs', import.meta.url));
+  const calls = [];
+  let counter = 0;
+  let release;
+  const gate = new Promise(resolve => { release = resolve; });
+  const raceLlm = { stream: async function* () {
+    const index = ++counter;
+    calls.push(index);
+    // Text fixed at call time, not resume time.
+    const text = index === 1
+      ? JSON.stringify([{ t: '自动生成的建议内容', i: 'explore' }])
+      : JSON.stringify([{ t: '刷新出来的新建议', i: 'apply' }]);
+    if (index === 1) await gate;
+    yield { type: 'text-delta', index: 0, text };
+  } };
+  const raceRecommend = createRecommender(raceLlm, () => ({ enabled: true, count: 2, timeoutMs: 20000 }));
+  const raceInput = { sessionId: 'sx', replyId: 'rx', provider: 'deepseek', model: 'm', turns: [{ user: 'u', assistant: 'a' }] };
+  const pending = raceRecommend(raceInput);
+  await new Promise(resolve => setImmediate(resolve));
+  const forced = await raceRecommend(raceInput, undefined, { force: true, avoid: ['已经展示过的旧建议'] });
+  release();
+  const auto = await pending;
+  t('force refresh does not join inflight auto job (own call + avoid)',
+    calls.length === 2 && JSON.stringify(forced) === JSON.stringify([{ text: '刷新出来的新建议', intent: 'apply' }])
+    && JSON.stringify(auto) === JSON.stringify([{ text: '自动生成的建议内容', intent: 'explore' }]));
+}
+
 // --- release history: sanitizer, version compare, and the TTL-cached host RPC ---
 t('parseReleases drops drafts/prerelease/bad tags, sorts desc, dedupes',
   JSON.stringify(parseReleases([

@@ -87,7 +87,9 @@ export function createRecommender(llm, getConfig) {
     const force = options.force === true;
     const key = JSON.stringify([input.sessionId, input.replyId, provider, model, input.turns, count]);
     if (!force && cache.has(key)) return cache.get(key);
-    let job = inflight.get(key);
+    // A force call must never join an inflight job: that job was started without
+    // the avoid list, so joining it would hand back exactly the set being replaced.
+    let job = force ? null : inflight.get(key);
     if (!job) {
       if (active >= 2) {
         if (force) throw new Error('Too many generation requests in flight');
