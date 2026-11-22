@@ -176,6 +176,7 @@ const CSS_TEXT = `
   transition: background-color .15s ease-out, border-color .15s ease-out;
 }
 .dsh-suggest-flow-text {
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -696,7 +697,7 @@ function ChipsRow({ sessionId, useInput, useSession, useConversation, useProject
         held ? h('div', {
           className: 'dsh-suggest-flow-row', role: 'toolbar', 'aria-label': tr('settings.nav'),
         },
-          h('div', { className: 'dsh-suggest-flow-chips' },
+          h('div', { className: 'dsh-suggest-flow-chips', role: 'group', 'aria-label': tr('settings.nav') },
             held.items.map((item, index) => {
               const text = item.text;
               const label = dirLabel(item.intent, tr);

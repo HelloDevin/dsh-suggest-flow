@@ -1,6 +1,6 @@
 {
   "name": "dsh-suggest-flow",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "icon": "./icon.png",
   "description": "Smart follow-up suggestions above the DSH composer: Explore / Expand / Apply intent chips, one-click refresh, adoption memory and full keyboard flow.",
   "type": "module",
