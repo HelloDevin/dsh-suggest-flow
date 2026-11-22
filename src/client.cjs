@@ -823,6 +823,7 @@ function SettingsSection({ t, remote }) {
   const uptodateRow = () => h('div', { className: 'dsh-suggest-flow-card' },
     h('div', { className: 'dsh-suggest-flow-verrow' },
       h('span', { className: 'dsh-suggest-flow-vernum' }, tr('settings.versions.uptodate')),
+      h('span', { className: 'dsh-suggest-flow-pill' }, `v${PLUGIN_VERSION}`),
       h('span', { className: 'dsh-suggest-flow-vertime' }, checkedAtText)));
   const renderVersions = () => {
     if (checkState === 'loading') {
@@ -871,7 +872,7 @@ function SettingsSection({ t, remote }) {
       h('div', { className: 'dsh-suggest-flow-head-icon' }, '💡'),
       h('div', {},
         h('div', { className: 'dsh-suggest-flow-title' }, tr('settings.title')),
-        h('div', { className: 'dsh-suggest-flow-subtitle' }, tr('settings.subtitle') + `（v${PLUGIN_VERSION}）`))),
+        h('div', { className: 'dsh-suggest-flow-subtitle' }, tr('settings.subtitle')))),
     !config ? h('p', { role: 'status', className: 'dsh-suggest-flow-msg' }, tr('settings.loading')) : [
       h('div', { className: 'dsh-suggest-flow-group' }, tr('settings.group.behavior')),
       h('div', { className: 'dsh-suggest-flow-card' },

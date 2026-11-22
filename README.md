@@ -2,8 +2,6 @@
 
 **Smart Suggestion Plugin for DSH** · 面向 [DSH](https://github.com/deepseek-ai)（DeepSeek Harness 0.2.x）的轻量级 AI 智能建议追问插件。
 
-> 已在 DSH Desktop **0.2.2-rc.5** 真实环境中端到端实测（含与 dsh-suggestion-chips 同装），验证项见[测试报告](docs/test-report.md)。
-
 AI 回复结束后，在**输入框上方**给出几条智能追问 chips，按三个意图方向组织，越用越懂你：
 
 - **🔵 Explore 深入探索** —— 追问当前回答的原理、机制与细节
@@ -97,16 +95,6 @@ dsh plugin --profile desktop remove dsh-suggest-flow
 
 或桌面端"插件"页移除，然后重启 DSH。本地数据在 `~/.dsh/storages/dsh-suggest-flow/`，可一并手动删除。
 
-## 开发
-
-```sh
-node scripts/build.mjs     # 构建 lib/（宿主入口 + 客户端 bundle，零构建依赖）
-npm test                   # 构建 + 宿主集成测试 + 渲染冒烟测试
-node scripts/make-icon.mjs # 重新生成 icon.png
-```
-
-文档：[原插件分析](docs/analysis/original-plugin-analysis.md) · [架构](docs/architecture.md) · [Prompt 设计](docs/prompt-design.md) · [新旧功能对照](docs/comparison.md) · [测试报告](docs/test-report.md) · [已知问题](docs/known-issues.md)
-
 ## 许可
 
-[MIT](LICENSE)。架构与宿主协议参考同作者的 dsh-suggestion-chips（亦为 MIT）。
+[MIT](LICENSE)
