@@ -31,7 +31,17 @@ dsh plugin --profile desktop add https://github.com/HelloDevin/dsh-suggest-flow/
 
 装完后**完全退出并重启 DSH Desktop**。开发调试也可以直接装目录：`dsh plugin --profile desktop add <本目录绝对路径>`（pnpm 会以 link 方式链接，迭代方便）。
 
-插件发布新版本后，**重新执行上面同一条命令**即可完成更新（永久链接，始终指向最新版）。
+## 更新
+
+**用带版本号的链接安装新版本**（每条 Release 的说明里都附了对应命令）：
+
+```sh
+dsh plugin --profile desktop add https://github.com/HelloDevin/dsh-suggest-flow/releases/download/v<新版本号>/dsh-suggest-flow.tgz
+```
+
+> 为什么不用上面的永久链接升级？pnpm 按依赖声明字符串判断是否已满足——同一条永久链接不会触发重新解析，装完还是旧版本。版本号变化会让 pnpm 重新解析，这才是有效的升级命令。装完重启 DSH。
+
+设置页「版本」区块也会自动检查新版本。注意：从 GitHub 安装命令装的版本，点「更新」按钮走的是市场按名更新，会显示保护性提示（不适用），请用上面的命令更新；从插件市场装的版本则可以点「更新」一键升级。
 
 ## 启用
 
