@@ -2,6 +2,8 @@
 
 **Smart Suggestion Plugin for DSH** · 面向 [DSH](https://github.com/deepseek-ai)（DeepSeek Harness 0.2.x）的轻量级 AI 智能建议追问插件。
 
+> 已在 DSH Desktop **0.2.2-rc.5** 真实环境中端到端实测（含与 dsh-suggestion-chips 同装），验证项见[测试报告](docs/test-report.md)。
+
 AI 回复结束后，在**输入框上方**给出几条智能追问 chips，按三个意图方向组织，越用越懂你：
 
 - **🔵 Explore 深入探索** —— 追问当前回答的原理、机制与细节

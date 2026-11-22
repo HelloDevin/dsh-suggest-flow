@@ -1,22 +1,16 @@
 # 已知问题与后续优化建议
 
-> dsh-suggest-flow v0.1.0 · 诚实清单：未验证 ≠ 通过
+> dsh-suggest-flow v0.1.1 · 诚实清单：未验证 ≠ 通过
 
 ## 1. 已知问题
 
-### 1.1 尚未在真实 DSH 宿主环境中验证（最重要）
+### 1.1 真实宿主验证结果（2026-11-23，DSH Desktop 0.2.2-rc.5）
 
-本项目在开发过程中**没有可用的 DSH 测试环境**。以下项目通过了宿主桩（stub）级集成测试与渲染冒烟测试，但**未在真实 DSH Desktop 中安装运行过**，不得视为已验证：
+已在真实 DSH Desktop（`profiles/desktop`，与 dsh-suggestion-chips 0.4.12 同装）完成端到端验证，通过项见[测试报告 §6](test-report.md)。**仍未验证**的项：
 
-- 插件安装 / 加载 / Manifest 识别 / cordis.patch.yml 插入
-- 真实宿主的 `ctx.llm.stream`、`ctx.typert.register`、`ctx.remote.$mount` 行为
-- `conversation.input.dock` / `settings.section` 插槽在真实 UI 中的渲染位置与堆叠
-- `useInput/useSession/useConversation/useProjection/inputActions` 在真实宿主中的实际形态
-- 设置页在宿主设置面板中的显示、locale `t` 注入、导航图标补丁
-- 与 dsh-suggestion-chips 同时安装的实测共存
-- dshmarket 一键更新 API 的端到端升级
-
-宿主接口用法全部继承自**可运行的** dsh-suggestion-chips v0.4.12 源码（同版本区间 `>=0.2.2-rc.1 <0.3.0-0`），这是当前最强的兼容性依据，但不等于验证。
+- 键盘流（↑/←→/Enter/Ctrl+Enter）在真实 UI 中的端到端操作（逻辑层已测，未在真实界面按键验证）
+- dshmarket 一键更新的端到端升级（版本检查 RPC 已验证通过，升级操作未执行）
+- 深色/浅色主题切换的完整视觉巡检（验证时为深色主题，浅色未逐一截图比对）
 
 ### 1.2 设计层面的已知限制
 
@@ -24,13 +18,13 @@
 - **刷新上限 5 次/轮**：超过后本轮不再可刷新（错误静默保留原组）。没有 UI 提示剩余次数——刻意保持低干扰，若用户反馈需要再考虑。
 - **方向偏置只影响 prompt 措辞**：不改变本地选择逻辑，偏置生效需要 ≥3 条带意图的采纳，早期使用感知不明显——这是防抖动的刻意取舍。
 - **行回退解析**：模型完全无视 JSON 协议输出裸行时按行解析（继承原插件的兼容策略），理论上可能放行非常规内容；块名单与长度门已拦住大部分。
-- **两个插件同装时双倍模型调用**：各插件独立生成，互不感知；文档已建议迁移后择一禁用。
+- **两个插件同装时双倍模型调用**：各插件独立生成，互不感知（已实测同装无冲突）；文档已建议迁移后择一禁用。
 
 ### 1.3 测试环境的近似性
 
-- 宿主测试使用 `@deepseek-ai/*` 的**手写 stub**（TypertRemoteService/resolveDshHome 的最小实现），RPC 层真实序列化行为未覆盖；
-- 渲染测试使用**手写 React stub**（effects 每渲染都执行，已用依赖签名守卫对齐真实语义），真实 React 的并发渲染/Suspense 行为未覆盖；
-- 真实浏览器事件（dblclick、composition、ResizeObserver）只在逻辑层测试，未做 DOM 级测试。
+- 宿主测试使用 `@deepseek-ai/*` 的**手写 stub**（TypertRemoteService/resolveDshHome 的最小实现）；RPC 层真实序列化行为由真实宿主验证补齐（见 §1.1）；
+- 渲染测试使用**手写 React stub**（effects 每渲染都执行，已用依赖签名守卫对齐真实语义）；真实 React 渲染由真实宿主 UI 验证补齐；
+- 真实浏览器事件（dblclick、composition、ResizeObserver）逻辑层已测；键盘流与输入法合成在真实 UI 的按键级验证仍待做（§1.1）。
 
 ## 2. 后续优化建议（按性价比排序）
 
