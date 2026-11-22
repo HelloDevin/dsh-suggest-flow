@@ -1,0 +1,13 @@
+{
+  "id": "dsh-suggest-flow",
+  "version": "0.1.0",
+  "main": "lib/index.mjs",
+  "description": "Smart follow-up suggestions above the DSH composer: Explore / Expand / Apply intent chips, one-click refresh, adoption memory and full keyboard flow.",
+  "engines": {
+    "dsh": ">=0.2.2-rc.1 <0.3.0-0"
+  },
+  "contributes": {
+    "tools": [],
+    "skills": []
+  }
+}
