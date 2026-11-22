@@ -64,7 +64,7 @@ dsh plugin --profile desktop add https://github.com/HelloDevin/dsh-suggest-flow/
 | `doubleClickSend` * | `true` | 双击直接发送；`false` 时双击仅填入 |
 | `hideWhenTyping` * | `true` | 草稿非空时隐藏整行 chips |
 | `keyboard` * | `true` | 键盘快捷键（↑ 激活、←→↑↓ 移动、Enter 填入、Ctrl+Enter 发送） |
-| `count` * | `3` | 每轮建议条数上限，1-4（允许产出 0 条） |
+| `count` * | `3` | 每轮建议条数上限，1-4；模型按对话动态给出 0~N 条，N 只是上限 |
 | `contextTurns` | `3` | 参与生成的最近对话轮数，1-4（最新一轮完整、历史轮减半压缩） |
 | `timeoutMs` | `20000` | 辅助调用超时，1000-60000 |
 | `provider` / `model` | 未设置 | 可选：显式指定辅助调用 provider/model；省略时跟随当前会话模型 |
