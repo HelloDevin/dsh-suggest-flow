@@ -43,6 +43,7 @@ const DICTIONARIES = {
     'settings.update.updating': '正在更新…',
     'settings.update.done': '更新完成，重启 DSH 生效',
     'settings.update.failed': '更新失败',
+    'settings.update.archiveHint': '当前版本是从 GitHub 安装包链接安装的，市场按名更新不适用。请重跑安装命令更新（见 README「安装」；命令永远指向最新版），或先卸载再从插件市场安装。',
     'settings.resetMemoryDesc': '删除本机记录的采纳历史与建议缓存（保留 30 天）',
     'settings.resetMemory': '清空采纳记忆与建议缓存',
     'settings.resetMemoryShort': '清空',
@@ -85,6 +86,7 @@ const DICTIONARIES = {
     'settings.update.updating': 'Updating…',
     'settings.update.done': 'Updated — restart DSH to apply',
     'settings.update.failed': 'Update failed',
+    'settings.update.archiveHint': 'This copy was installed from a GitHub release archive link, so the market cannot update it by name. Re-run the install command (README「Install」; it always points to the latest release), or uninstall first and install from the plugin market.',
     'settings.resetMemoryDesc': 'Deletes the locally stored adoption history and suggestion cache (30-day window)',
     'settings.resetMemory': 'Clear adoption memory & cache',
     'settings.resetMemoryShort': 'Clear',
@@ -787,6 +789,9 @@ function SettingsSection({ t, remote }) {
   useEffect(() => { loadReleases(false); }, [remote]);
   // One-click update via the dshmarket public update API (v1). Same-origin fetch
   // from the settings page carries the host session cookie.
+  // Release-archive installs are name-replace-protected by the market guard
+  // ("installed from an archive link…"); swap the raw refusal for actionable text.
+  const friendlyFailure = raw => (/archive|压缩包/i.test(raw ?? '') ? tr('settings.update.archiveHint') : raw);
   const runUpdate = () => {
     setUpdateInfo(info => ({ phase: 'updating', latestVersion: info?.latestVersion }));
     (async () => {
@@ -797,7 +802,7 @@ function SettingsSection({ t, remote }) {
       const operation = created?.operation ?? created;
       const operationId = operation?.operationId;
       if (!res || res.status !== 202 || !operationId) {
-        setUpdateInfo({ phase: 'failed', message: operation?.failure?.message ?? 'HTTP ' + (res ? res.status : 'network') });
+        setUpdateInfo({ phase: 'failed', message: friendlyFailure(operation?.failure?.message) ?? 'HTTP ' + (res ? res.status : 'network') });
         return;
       }
       for (let i = 0; i < 120; i++) {
@@ -812,7 +817,7 @@ function SettingsSection({ t, remote }) {
           // Re-running an update when the source is already at the installed
           // version is not a failure — it means we are up to date.
           setUpdateInfo({ phase: code === 'already-installed' ? 'uptodate' : 'failed',
-            message: record?.failure?.message ?? state });
+            message: friendlyFailure(record?.failure?.message) ?? state });
           return;
         }
       }
